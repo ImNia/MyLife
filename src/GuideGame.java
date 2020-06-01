@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class GuideGame {
     /*Вывод всего чуда
         Надо добавить чистку кеша
@@ -20,57 +22,27 @@ public class GuideGame {
             }
         }
 
-    Spirit []Neighbors(Spirit[] colony, int MAX){
-        Spirit test[] = new Spirit[MAX * MAX];
-        for (int x = 0; x < MAX; x++) {
-            for (int y = 0; y < MAX; y++) {
-                test[y + MAX * x] = new Spirit(false, x, y);
-            }
-        }
+    ArrayList<Spirit> Sosed(Spirit[] colony, int i, int MAX){
+        ArrayList<Spirit> tmp = new ArrayList<>();
 
-        for (int x = 0; x < MAX; x++) {
-            for (int y = 0; y < MAX; y++) {
-                test[y + MAX * x].state = colony[y + MAX * x].state;
-            }
-        }
-
-        int count = 0;
-        for (int x = 0; x < MAX * MAX; x++) {
-            //Считаем соседей
-            for (int i = 0; i < MAX * MAX; i++) {
-                if(((x - MAX - 1) <= 0) || ((x + MAX + 1) >= MAX * MAX))
-                    continue;
-                else{
-                    if ((i >= 0) && (i <= 2)) {
-                        if(test[x - MAX + i - 1].state)
-                            count++;
-                    }
-                    if(i == 3){
-                        if(test[x - 1].state)
-                            count++;
-                    }
-                    if(i == 4){
-                        if(test[x + 1].state)
-                            count++;
-                    }
-                    if((i >= 5) && (i <= 7)){
-                        if(test[x + MAX + i - 6].state)
-                            count++;
+        Spirit square = new Spirit(false, i % MAX - 1, (int)(i / MAX) - 1);
+        for(int y = 0; y < 3; y++){
+            if((square.y + y) < 0 || (square.y + y) > MAX)
+                continue;
+            else{
+                int x_min = (square.y + y) * MAX;
+                int x_max = (square.y + y + 1) * MAX - 1;
+                for(int x = 0; x < 3; x++){
+                    if ((y == 1) && (x == 1))
+                            continue;
+                    int index = (square.y + y) * MAX + x + square.x;
+                    if((index >= x_min) && (index <= x_max) && (index >= 0) && (index < MAX * MAX)){
+                        tmp.add(colony[index]);
                     }
                 }
             }
-            //System.out.println(count);
-            //Проверка на то что живем или нет
-            if(count == 3){
-                colony[x].state = true;
-            }else if(count == 2){
-                //ничего
-            }else{
-                colony[x].state = false;
-            }
-            count = 0;
         }
 
-        return colony;
+        return tmp;
     }
 }
